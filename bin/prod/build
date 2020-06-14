@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+. $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/bin/prod/config.sh
+
+cd $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/docker/mysql
+echo '[x] Build docker image [mysql]: notasquare-zero/kubernetes-web-ui/mysql-prod'
+sudo docker build -f Dockerfile -t notasquare-zero/kubernetes-web-ui/mysql-dev .
+sudo docker build -f Dockerfile-prod -t notasquare-zero/kubernetes-web-ui/mysql-prod .
+
+cd $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/docker/web
+echo '[x] Build docker image [web]: notasquare-zero/kubernetes-web-ui/web-prod'
+sudo docker build -f Dockerfile -t notasquare-zero/kubernetes-web-ui/web-dev .
+sudo docker build -f Dockerfile-prod -t notasquare-zero/kubernetes-web-ui/web-prod .
+
+echo '[x] Build docker container [mysql-storage]: notasquare-zero/kubernetes-web-ui/mysql-prod'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_mysql-prod-storage \
+    notasquare-zero/kubernetes-web-ui/mysql-prod true
+
+echo '[x] Build docker container [mysql]: notasquare-zero/kubernetes-web-ui/mysql-prod'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_mysql-prod \
+    --volumes-from=notasquare-zero_kubernetes-web-ui_mysql-prod-storage \
+    -p $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_PROD_MYSQL_PORT:3306 \
+    notasquare-zero/kubernetes-web-ui/mysql-prod
+
+echo '[x] Build docker container [web]: notasquare-zero/kubernetes-web-ui/web-prod'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_web-prod \
+    --link notasquare-zero_kubernetes-web-ui_mysql-prod:db \
+    -v $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/src/www/:/opt/www \
+    -p $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_PROD_WEB_PORT:80 \
+    notasquare-zero/kubernetes-web-ui/web-prod

@@ -1,0 +1,1 @@
+FROM notasquare-zero/kubernetes-web-ui/mysql-dev

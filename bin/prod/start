@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo '[x] Start docker container: notasquare-zero_kubernetes-web-ui_mysql-prod'
+sudo docker start notasquare-zero_kubernetes-web-ui_mysql-prod
+
+echo '[x] Start docker container: notasquare-zero_kubernetes-web-ui_web-prod'
+sudo docker start notasquare-zero_kubernetes-web-ui_web-prod

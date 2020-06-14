@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo '[x] Clean docker container: notasquare-zero_kubernetes-web-ui_mysql-prod'
+sudo docker stop notasquare-zero_kubernetes-web-ui_mysql-prod
+sudo docker rm notasquare-zero_kubernetes-web-ui_mysql-prod
+
+echo '[x] Clean docker container: notasquare-zero_kubernetes-web-ui_web-prod'
+sudo docker stop notasquare-zero_kubernetes-web-ui_web-prod
+sudo docker rm notasquare-zero_kubernetes-web-ui_web-prod

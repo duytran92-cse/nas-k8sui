@@ -1,0 +1,3 @@
+FROM notasquare-zero/kubernetes-web-ui/web-dev
+
+ENV APP_ENV prod

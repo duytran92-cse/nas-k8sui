@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+. $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/bin/prod/config.sh
+
+cd $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/bin/prod
+./stop
+./clean
+./build
+./start

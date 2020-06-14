@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+. $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/bin/dev/config.sh
+
+cd $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/docker/mysql
+echo '[x] Build docker image [mysql]: notasquare-zero/kubernetes-web-ui/mysql-dev'
+sudo docker build -f Dockerfile -t notasquare-zero/kubernetes-web-ui/mysql-dev .
+
+cd $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/docker/web
+echo '[x] Build docker image [web]: notasquare-zero/kubernetes-web-ui/web-dev'
+sudo docker build -f Dockerfile -t notasquare-zero/kubernetes-web-ui/web-dev .
+
+echo '[x] Build docker container [mysql-storage]: notasquare-zero/kubernetes-web-ui/mysql-dev'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_mysql-dev-storage \
+    notasquare-zero/kubernetes-web-ui/mysql-dev true
+
+echo $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_DEV_WEB_PORT
+
+echo '[x] Build docker container [mysql]: notasquare-zero/kubernetes-web-ui/mysql-dev'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_mysql-dev \
+    --volumes-from=notasquare-zero_kubernetes-web-ui_mysql-dev-storage \
+    -p $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_DEV_MYSQL_PORT:3306 \
+    notasquare-zero/kubernetes-web-ui/mysql-dev
+
+echo '[x] Build docker container [web]: notasquare-zero/kubernetes-web-ui/web-dev'
+sudo docker run -d --name=notasquare-zero_kubernetes-web-ui_web-dev \
+    --link notasquare-zero_kubernetes-web-ui_mysql-dev:db \
+    -v $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_HOME/src/www/:/opt/www \
+    -p $NOTASQUARE_ZERO_KUBERNETES_WEB_UI_DEV_WEB_PORT:80 \
+    notasquare-zero/kubernetes-web-ui/web-dev

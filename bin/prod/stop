@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo '[x] Stop docker container: notasquare-zero_kubernetes-web-ui_mysql-prod'
+sudo docker stop notasquare-zero_kubernetes-web-ui_mysql-prod
+
+echo '[x] Stop docker container: notasquare-zero_kubernetes-web-ui_web-prod'
+sudo docker stop notasquare-zero_kubernetes-web-ui_web-prod
